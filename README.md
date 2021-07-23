@@ -1,66 +1,50 @@
-# profile_bowtie2-v0.1
 ## 1 Introduction
-  It is a computational tool for profiling the composition of microbial communities (Bacteria, Archaea and Eukaryotes) from metagenomic shotgun sequencing data with species-level. The process includes: mapping of metagenomic sequencing data to a reference database, filtering of mapping results, and calculation of relative abundance of species.<br>
-### Advantage:<br>
-* Fast speed and high accuracy;<br>
-* Can customize the database;<br>
-* Not dependent on evolutionary relationships;<br>
-* Accurate estimation of species relative abundance.<br>
+Accuracy and fast metagenomics classification using unique alignment.
 
-### 1.1 Mapping
-Use bowtie2 for mapping, and filter the result that read unmapped, mate unmapped, and supplement alignment.
+Bowtie2 with the options: '--sensitive --end-to-end -k 2' is used to align reads to genomes.
 
-### 1.2 Filtering of mapping results
-* Paired-reads match the same contig;<br>
+Then alignments will be filtered according to the following criteria:
+* Paired-reads align on the same contig;<br>
 * unique alignment;<br>
-* Identity >= 0.95, Identity = 100 * MatchedBases / (MatchedBases + Substituions + Insertions + Deletions), MatchedBases = NM - Insertions - Deletions;<br>
-* Only keep SGBs with more than 100 reads on the comparison.<br>
+* Alignment identity >= 0.95, Identity = 100 * MatchedBases / (MatchedBases + Substituions + Insertions + Deletions)<br>
+* Genomes which supported by at least N (default: 100) paired-end reads are retained for further analysis.<br>
 
-### 1.3 Calculation of relative abundance of species
-rel_ab = (SGB_reads_num/SGB_size) / sum(SGB_reads_num/SGB_size) * 100
+Finally, the relative abundance of each genome in the sample is calculated using the following formula:
+rel_ab = (genome_alignment_num/genome_size) / sum(genome_alignment_num/genome_size) * 100
 
-## 2 Pre-requisites
+## 2 Usage
 ### 2.1 Use conda to install related dependencies
-    conda env create -n profile -f env.yaml
-    conda activate profile
-### 2.2 Demo data
-The simulated metagenome were generated using three bacteria genomes<br>
-  ```sh 0.data/work.sh```<br>
+```
+conda env create -n profile -f env.yaml
+conda activate profile
+```
+
+### 2.2 Demo
+The simulated metagenomics reads were generated using three genomes<br>
+```
+gzip -d 0.data/*.gz
+iss generate --cpus 8 --draft 0.data/*.fa --n_reads 1M -m Hiseq --output test1_data
+```
+
+### 2.3 Index
 Create bowtie2 index of reference genome<br>
-    ```sh 1.bowtie2_index/work.sh```
+```
+mkdir 1.index
+cat 0.data/*.fa > 1.index/merge_sp3.fna
+bowtie2-build --threads 4 1.index/merge_sp3.fna 1.index/merge_sp3_bowtie2_index > 1.index/index.log
+```
 
-## 3 Basic usage
-    python profile.py -x bowtie2_index -r1 {rmhost_reads1} -r2 {rmhost_reads2} -contig {genome_contig_length_file} -ID {genome_ID_file} -t {threads} -i {identity} -n {reads_num} -o {output_prefix}
+Obtain the corresponding relationship of genome_ID, contig_ID, contig_length.
+```
+python rules/genome_len.py -i 0.data/*.fa -o 1.index/genome_contig_length.txt
+```
 
-### optional arguments:<br>
-  ```-h, --help```            show this help message and exit<br>
-  ```-x BOWTIE2_INDEX, --bowtie2_index BOWTIE2_INDEX```
-                        The prefix of the Bowtie2 index of the reference genome<br>
-  ```-r1 RMHOST_READS1, --rmhost_reads1 RMHOST_READS1```
-                        Query input files are FASTQ .fq/.fastq<br>
-  ```-r2 RMHOST_READS2, --rmhost_reads2 RMHOST_READS2```
-                        Query input files are FASTQ .fq/.fastq<br>
-  ```-contig GENOME_CONTIG_LENGTH, --genome_contig_length GENOME_CONTIG_LENGTH```
-                        The file of the reference genomes corresponding to the length of contigs<br>
-  ```-ID GENOME_ID, --genome_ID GENOME_ID```
-                        The file containing the ID of the reference genome<br>
-  ```-t N, --threads N```     Number of alignment threads to launch<br>
-  ```-i N, --identity N```    Keep reads larger than N<br>
-  ```-n N, --reads_num N```   Keep the genome larger than N reads<br>
-  ```-o OUTPUT_PREFIX, --output_prefix OUTPUT_PREFIX```
-                        The prefix name of the output result<br>
+### 2.4 Run
+Raw reads should be trimmed and removed the host contamination in the real study, omitted here.
+```
+python rules/profile_bowtie2.py -x 1.index/merge_sp3_bowtie2_index -r1 test1_data_R1.fastq -r2 test1_data_R2.fastq -contig 1.index/genome_contig_length.txt -t 8 -i 0.95 -n 100 -o test1
+```
 
-### 3.1 Input files
-```rmhost_reads```  Query input files are FASTQ .fq/.fastq.<br>
-```bowtie2_index```  The prefix of the Bowtie2 index of the reference genome.<br>
-```genome_contig_length_file```  The file of the reference genomes corresponding to the length of contigs.<br>
-```genome_ID_file```  The file containing the ID of the reference genome.<br>
-
-### 3.2 Run a single sample
-```sh work.sh```
-
-### 3.3 Output files
-```test1.bam```  The result of the comparison of reads to the reference database.<br>
-```test1_aligned.tsv```  Keep paired-end reads aligned to the same contig and calculate the identity.<br>
-```test1_profile.tsv```  Filter the comparison results and calculate the relative abundance of species.<br>
-```test1_summary.txt```  The relative abundance of species in the statistical sample.<br>
+### 2.5 Output files
+```test1_filtered_align.tsv```  Filtered alignments.<br>
+```test1_profile.tsv```  Relative abundance of each genome in the sample.<br>

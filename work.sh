@@ -1,1 +1,0 @@
-python rules/profile_bowtie2.py -x 1.bowtie2_index/merge_sp3_bowtie2_index -r1 0.data/test1_trim_R1.fastq.gz -r2 0.data/test1_trim_R2.fastq.gz -contig 0.data/genome_contig_length.txt -ID 0.data/merge_sp3_ID.txt -t 4 -i 0.95 -n 100 -o test1
