@@ -48,3 +48,9 @@ python rules/profile_bowtie2.py -x 1.index/merge_sp3_bowtie2_index -r1 test1_dat
 ### 2.5 Output files
 ```test1_filtered_align.tsv```  Filtered alignments.<br>
 ```test1_profile.tsv```  Relative abundance of each genome in the sample.<br>
+
+### 2.6 Integrate output files
+When there are multiple samples, the profile results of all samples are integrated.
+```
+python rules/profile_merge.py -i */*_profile.tsv -o merge.tsv -s .tsv
+```
