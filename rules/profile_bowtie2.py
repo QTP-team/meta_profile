@@ -6,7 +6,7 @@ import os
 
 parser = argparse.ArgumentParser(
     prog = "profile_bowtie2.py",
-    usage = "python rules/profile_bowtie2.py -x 1.index/merge_sp3_bowtie2_index -r1 0.data/test1_data_R1.fastq -r2 0.data/test1_data_R2.fastq -contig 1.index/genome_contig_length.txt -t 4 -i 0.95 -n 100 -o test1")
+    usage = "python rules/profile_bowtie2.py -x 1.index/merge_sp3_bowtie2_index -r1 test1_data_R1.fastq -r2 test1_data_R2.fastq -contig 1.index/genome_contig_length.txt -t 4 -i 0.95 -n 100 -o test1")
 
 arg = parser.add_argument
 
