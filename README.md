@@ -2,6 +2,7 @@
 Accuracy and fast metagenomics classification using unique alignment.
 
 Minimap2 with the options: '-cx sr -N 2' is used to align reads to genomes.
+This method compares the number of reads to the reference genome more, and the accuracy of the comparison is higher.
 
 Then alignments will be filtered according to the following criteria:
 * Paired-reads align on the same contig;<br>
@@ -49,8 +50,8 @@ python rules/profile_minimap2.py -x 1.index/merge_sp3_minimap2_index.min -r1 tes
 ```test1_filtered_align.tsv```  Filtered alignments.<br>
 ```test1_profile.tsv```  Relative abundance of each genome in the sample.<br>
 
-### 2.6 Consolidate output files
-Consolidate all output files into one file, including the profile results of all samples.
+### 2.6 Combine output files
+Combine multiple output files into one file, including the profile results of all samples.
 ```
 python rules/profile_merge.py -i */*_profile.tsv -o merge.tsv -s .tsv
 ```
