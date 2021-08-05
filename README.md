@@ -50,8 +50,7 @@ python rules/profile_minimap2.py -x 1.index/merge_sp3_minimap2_index.min -r1 tes
 ```test1_filtered_align.tsv```  Filtered alignments.<br>
 ```test1_profile.tsv```  Relative abundance of each genome in the sample.<br>
 
-### 2.6 Combine output files
-Combine multiple output files into one file, including the profile results of all samples.
+### 2.6 Combine multiple output files into one file
 ```
 python rules/profile_merge.py -i */*_profile.tsv -o merge.tsv -s .tsv
 ```
