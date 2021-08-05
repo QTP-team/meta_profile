@@ -36,7 +36,7 @@ def profile(index,rmhost1,rmhost2,genome_contig_length_file,threads,identity,rea
                 r2_ID, r2_contig, r2_start_loc, r2_match_bases, r2_alignment_block_length = r_ID, r_contig, r_start_loc, r_match_bases, r_alignment_block_length
                 if r1_ID[:-2] == r2_ID[:-2] and r1_contig == r2_contig:
                     identity = (int(r1_match_bases) + int(r2_match_bases)) / (int(r1_alignment_block_length) + int(r2_alignment_block_length))
-                    aligned_file.write("%s\t%s\t%s\t%s\t%s\n" %(r1_ID, r1_contig, r1_start_loc, r2_start_loc, identity))
+                    aligned_file.write("%s\t%s\t%s\t%s\t%s\n" %(r1_ID[:-2], r1_contig, r1_start_loc, r2_start_loc, identity))
                     r1_ID = "0"
                 else:
                     r1_ID = "0"
