@@ -1,7 +1,7 @@
 ## 1 Introduction
 Accuracy and fast metagenomics classification using unique alignment.
 
-Minimap2 with the options: '-cx sr -N 2' is used to align reads to genomes.
+Minimap2 with the options: '-cx sr -N 2' is used to align reads to genomes.<br>
 This method compares the number of reads to the reference genome more, and the accuracy of the comparison is higher.
 
 Then alignments will be filtered according to the following criteria:
