@@ -13,7 +13,7 @@ df = pd.DataFrame(columns=["Genome_ID","rel_ab"])
 for file in args.infiles:
     data = pd.read_csv(file, sep = "\t", header = 0)
     data = data[['Genome_ID', 'rel_ab']]
-    data.columns = ['Genome_ID',file.split('/')[1].split('_')[0]]
+    data.columns = ['Genome_ID',file.split('/')[1].split('_profile')[0]]
     df = pd.merge(data,df,on='Genome_ID',how='outer')
 del df['rel_ab']
 df = df.fillna(0)
